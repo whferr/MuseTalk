@@ -1,0 +1,27 @@
+build:
+  gpu: true
+  python_version: "3.11"
+  system_packages:
+    - "ffmpeg"
+    - "libgl1-mesa-glx"
+    - "libglib2.0-0"
+  python_packages:
+    - "torch"
+    - "transformers"
+    - "accelerate"
+    - "claude-api"
+    - "gradio"
+    - "numpy"
+    - "opencv-python"
+    - "omegaconf"
+    - "tqdm"
+    - "gdown"
+    - "imageio"
+    - "imageio-ffmpeg"
+    - "moviepy"
+    - "huggingface_hub"
+    - "ffmpeg-python"
+  run:
+    - pip install -r requirements.txt
+
+predict: "predict.py:Predictor"
