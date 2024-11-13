@@ -21,7 +21,6 @@ build:
     - "moviepy"
     - "huggingface_hub"
     - "ffmpeg-python"
-  run:
-    - pip install -r requirements.txt
+    - "-r requirements.txt"
 
 predict: "predict.py:Predictor"
