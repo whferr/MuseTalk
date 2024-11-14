@@ -28,6 +28,7 @@ import gdown
 import imageio
 import ffmpeg
 from moviepy.editor import *
+from cog import BasePredictor, Input, Path
 
 
 ProjectDir = os.path.abspath(os.path.dirname(__file__))
@@ -421,6 +422,29 @@ ip_address = "0.0.0.0"  # Replace with your desired IP address
 port_number = 7860  # Replace with your desired port number
 
 
-demo.queue().launch(
-    share=False , debug=True, server_name=ip_address, server_port=port_number
-)
+# Add Predictor class at the end of the file
+class Predictor(BasePredictor):
+    def setup(self):
+        """Load the model into memory"""
+        self.audio_processor, self.vae, self.unet, self.pe = load_all_model()
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.timesteps = torch.tensor([0], device=self.device)
+
+    def predict(
+        self,
+        audio: Path = Input(description="Input audio file"),
+        video: Path = Input(description="Reference video file"), 
+        bbox_shift: float = Input(description="BBox shift value in pixels", default=0)
+    ) -> Path:
+        """Run lip sync prediction"""
+        processed_video = check_video(str(video))
+        output_path, _ = inference(
+            str(audio),
+            processed_video,
+            bbox_shift
+        )
+        return Path(output_path)
+
+# Comment out or remove the demo.launch() call when running on Replicate
+if __name__ == "__main__":
+    demo.queue().launch(share=False, debug=True)
